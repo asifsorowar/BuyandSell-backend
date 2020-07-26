@@ -7,12 +7,10 @@ const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true,
     uppercase: true,
   },
   lastName: {
     type: String,
-    required: true,
     uppercase: true,
   },
   email: {
@@ -27,6 +25,7 @@ const userSchema = new mongoose.Schema({
   photo: {
     type: String,
     default: "nophoto.png",
+    required: true,
   },
 });
 
@@ -69,6 +68,14 @@ const User = mongoose.model("User", userSchema);
 
 const validate = (user) => {
   const schema = Joi.object({
+    firstName: Joi.string()
+      .required()
+      .regex(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
+      .message("First name Only words characters allowed"),
+    lastName: Joi.string()
+      .required()
+      .regex(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
+      .message("Last name Only words characters allowed"),
     email: Joi.string().email().required(),
     password: Joi.string().required().min(5),
   });

@@ -35,7 +35,9 @@ router.put("/me/update", auth, async (req, res) => {
     await file.mv(`${process.env.PHOTO_UPLOAD_PATH}/${file.name}`);
     await User.findByIdAndUpdate(user._id, {
       $set: {
-        photo: file.name,
+        photo: `${req.protocol}://${req.get("host")}/profile_picture/${
+          file.name
+        }`,
       },
     });
   }
@@ -62,8 +64,11 @@ router.post("/", async (req, res) => {
   if (user) return res.status(400).send("email already taken");
 
   user = new User({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
+    photo: `${req.protocol}://${req.get("host")}/profile_picture/nophoto.png`,
   });
 
   await user.save();
@@ -81,6 +86,7 @@ router.post("/", async (req, res) => {
 
 const validateUpdate = (user) => {
   const schema = Joi.object({
+    image: Joi.object().required(),
     firstName: Joi.string()
       .required()
       .regex(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)

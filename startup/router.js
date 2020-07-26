@@ -11,6 +11,10 @@ const cors = require("cors");
 const error = require("../middleware/error");
 const users = require("../routes/users");
 const auth = require("../routes/auth");
+const listings = require("../routes/listings");
+const PushTokens = require("../routes/pushTokens");
+const messages = require("../routes/messages");
+const replyMessages = require("../routes/replyMessages");
 
 module.exports = (app) => {
   app.use(express.static("public"));
@@ -26,15 +30,11 @@ module.exports = (app) => {
     app.use(morgan("dev"));
   }
 
-  // app.use("/api/departments", departments);
-  // app.use("/api/batches", batches);
-  // app.use("/api/courses", courses);
-  // app.use("/api/notes", notes);
-  // app.use("/api/questions", questions);
-  // app.use("/api/crInfos", crInfos);
-  // app.use("/api/teacherInfos", teacherInfos);
-  // app.use("/api/comments", comments);
+  app.use("/api/listings", listings);
   app.use("/api/users", users);
   app.use("/api/auth", auth);
+  app.use("/api/pushTokens", PushTokens);
+  app.use("/api/messages", messages);
+  app.use("/api/replyMessages", replyMessages);
   app.use(error);
 };
